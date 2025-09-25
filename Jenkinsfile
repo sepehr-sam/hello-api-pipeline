@@ -13,7 +13,7 @@ pipeline {
     PROD_URL  = "http://localhost:3001/hello"
   }
 
-  options { timestamps(); ansiColor('xterm') }
+  options { timestamps()}
 
   stages {
 
