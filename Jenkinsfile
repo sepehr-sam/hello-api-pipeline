@@ -108,7 +108,7 @@ pipeline {
   }
 
   post {
-    success { echo '✅ All stages passed successfully.' }
-    failure { echo '❌ Pipeline failed. Check logs.' }
+    success { echo ' All stages passed successfully.' }
+    failure { echo ' Pipeline failed. Check logs.' }
   }
 }
