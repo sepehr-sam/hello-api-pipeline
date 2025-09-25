@@ -22,19 +22,21 @@ pipeline {
     }
 
     stage('Build (create artefact)') {
-      steps {
-        bat 'node -v && npm -v'
-        bat 'npm ci || npm install'
+  steps {
+    // Node + deps (fine that your agent already has Node)
+    bat 'node -v && npm -v'
+    bat 'npm ci || npm install'
 
-        // Create build artefact (zip)
-        bat '''
-          if exist hello-api-artifact.zip del /f /q hello-api-artifact.zip
-          powershell -NoProfile -ExecutionPolicy Bypass -Command "Compress-Archive -Path * -DestinationPath hello-api-artifact.zip -Force -CompressionLevel Optimal -Exclude node_modules,*.zip,.git"
-        '''
-        archiveArtifacts artifacts: 'hello-api-artifact.zip', fingerprint: true
-      }
-    }
+    // Create a clean zip with only the files we need to deploy
+    bat '''
+      del /f /q hello-api-artifact.zip 2>NUL
+      powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+        "Compress-Archive -Path app.js,package.json,package-lock.json,test.js,Jenkinsfile -DestinationPath hello-api-artifact.zip -Force"
+    '''
 
+    archiveArtifacts artifacts: 'hello-api-artifact.zip', fingerprint: true
+  }
+}
     stage('Test (automated)') {
       steps {
         bat 'npm test || exit /b 0'
