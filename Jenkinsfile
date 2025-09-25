@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   // Make sure you configured a NodeJS tool named "node18" in Jenkins
-  tools { nodejs 'node18' }
+
 
   environment {
     TEST_DIR = 'C:\\apps\\hello-api-test'
