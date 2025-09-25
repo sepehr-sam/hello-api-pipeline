@@ -53,20 +53,16 @@ pipeline {
     }
 
     stage('Security (npm audit)') {
-      steps {
-        bat '''
-          powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-            "$output = (npm audit --audit-level=high 2^>^&1); ^
-             $output ^| Out-File -FilePath security-summary.txt -Encoding utf8; ^
-             exit 0"
-        '''
-      }
-      post {
-        always {
-          archiveArtifacts artifacts: 'security-summary.txt', fingerprint: true
-        }
-      }
+  steps {
+    // Write npm audit output to a file; never fail the build here
+    bat 'cmd /c npm audit --audit-level=high > security-summary.txt 2>&1 || exit /b 0'
+  }
+  post {
+    always {
+      archiveArtifacts artifacts: 'security-summary.txt', fingerprint: true
     }
+  }
+}
 
     stage('Deploy to TEST') {
       steps {
